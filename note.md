@@ -1,3 +1,0 @@
-колонки вітру винесено з weather_record у таблицю weather_wind, зв'язок через record_id. Міграція f6af308c367f_extract_wind створює weather_wind, копіює дані через INSERT SELECT і видаляє вітрові колонки з weather_record. 
-Перехід з етапу 1: python -m alembic upgrade head. Відкат (downgrade -1) повертає колонки і заповнює їх з weather_wind; на час відкату створюється індекс ix_weather_wind_record_id, який потім видаляється, щоб відкат не був повільним. 
-Перевірка: після накочення в weather_wind 170928 рядків, як у CSV.

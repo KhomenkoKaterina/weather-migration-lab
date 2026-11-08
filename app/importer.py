@@ -2,7 +2,8 @@ import csv
 from datetime import datetime
 from sqlalchemy.orm import Session
 from app.db import engine
-from app.models import WeatherRecord, WindDirection
+from app.models import WeatherRecord, WeatherWind, WindDirection
+from app.application.go_outside import is_go_outside
 
 
 def parse_datetime(value):
@@ -14,14 +15,19 @@ def parse_time(value):
 
 
 def row_to_weather_record(row):
-    return WeatherRecord(
+    record = WeatherRecord(
         country=row["country"],
         last_updated=parse_datetime(row["last_updated"]),
         sunrise=parse_time(row["sunrise"]),
+    )
+    record.wind = WeatherWind(
         wind_kph=float(row["wind_kph"]),
         wind_degree=int(row["wind_degree"]),
         wind_direction=WindDirection[row["wind_direction"]],
+        go_outside=is_go_outside(float(row["wind_kph"]))
     )
+    return record
+
 
 
 def import_weather_data():
@@ -32,7 +38,6 @@ def import_weather_data():
                 record = row_to_weather_record(row)
                 session.add(record)
         session.commit()
-            
 
 
 if __name__ == "__main__":
