@@ -1,0 +1,40 @@
+import enum
+from datetime import datetime, time
+from sqlalchemy import DateTime, Enum, Float, Integer, String, Time
+from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
+
+class WindDirection(enum.Enum):
+    N = "N"
+    NNE = "NNE"
+    NE = "NE"
+    ENE = "ENE"
+    E = "E"
+    ESE = "ESE"
+    SE = "SE"
+    SSE = "SSE"
+    S = "S"
+    SSW = "SSW"
+    SW = "SW"
+    WSW = "WSW"
+    W = "W"
+    WNW = "WNW"
+    NW = "NW"
+    NNW = "NNW"
+
+
+class Base(DeclarativeBase):
+    pass
+
+
+class WeatherRecord(Base):
+    __tablename__ = "weather_record"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    country: Mapped[str] = mapped_column(String(100), nullable=False)
+    last_updated: Mapped[datetime] = mapped_column(DateTime, nullable=False)
+    sunrise: Mapped[time] = mapped_column(Time, nullable=False)
+    wind_kph: Mapped[float] = mapped_column(Float, nullable=False)
+    wind_degree: Mapped[int] = mapped_column(Integer, nullable=False)
+    wind_direction: Mapped[WindDirection] = mapped_column(
+        Enum(WindDirection), nullable=False
+    )
