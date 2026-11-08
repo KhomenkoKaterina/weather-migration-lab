@@ -1,7 +1,9 @@
 import enum
 from datetime import datetime, time
-from sqlalchemy import DateTime, Enum, Float, Integer, String, Time
+
+from sqlalchemy import DateTime, Enum, Float, ForeignKey, Integer, String, Time
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
+
 
 class WindDirection(enum.Enum):
     N = "N"
@@ -33,6 +35,15 @@ class WeatherRecord(Base):
     country: Mapped[str] = mapped_column(String(100), nullable=False)
     last_updated: Mapped[datetime] = mapped_column(DateTime, nullable=False)
     sunrise: Mapped[time] = mapped_column(Time, nullable=False)
+
+
+class WeatherWind(Base):
+    __tablename__ = "weather_wind"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    record_id: Mapped[int] = mapped_column(
+        Integer, ForeignKey("weather_record.id"), nullable=False
+    )
     wind_kph: Mapped[float] = mapped_column(Float, nullable=False)
     wind_degree: Mapped[int] = mapped_column(Integer, nullable=False)
     wind_direction: Mapped[WindDirection] = mapped_column(
